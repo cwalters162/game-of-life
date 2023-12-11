@@ -1,3 +1,4 @@
+use macroquad::input::{is_mouse_button_down, mouse_position, MouseButton};
 use crate::config::{NUM_COLS, NUM_ROWS};
 use crate::cell::Cell;
 
@@ -70,6 +71,13 @@ impl GameWorld {
             for c in 0..self.cells[r].len() {
                 self.cells[r][c].alive = self.cells[r][c].next_alive;
             }
+        }
+    }
+
+    pub fn handle_mouse_down(&mut self) {
+        if is_mouse_button_down(MouseButton::Left) {
+            let (mouse_x, mouse_y) = mouse_position();
+            self.cells[mouse_x as usize][mouse_y as usize].alive = true;
         }
     }
 }

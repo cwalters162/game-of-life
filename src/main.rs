@@ -23,9 +23,10 @@ fn window_conf() -> Conf {
 async fn main() {
     let mut world = game_world::GameWorld::new();
     loop {
-
+        world.handle_mouse_down();
         world.check_surrounding();
         clear_background(BLACK);
+
 
         for row in world.cells.iter() {
             for cell in row {
