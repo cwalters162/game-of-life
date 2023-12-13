@@ -1,6 +1,8 @@
-use macroquad::input::{is_mouse_button_down, mouse_position, MouseButton};
+use macroquad::input::{is_mouse_button_down, is_mouse_button_pressed, mouse_position, MouseButton};
+
 use crate::config::{NUM_COLS, NUM_ROWS};
 use crate::cell::Cell;
+use crate::util::{get_height, get_width};
 
 pub struct GameWorld {
     pub cells: Vec<Vec<Cell>>,
@@ -74,10 +76,31 @@ impl GameWorld {
         }
     }
 
-    pub fn handle_mouse_down(&mut self) {
+    pub(crate) fn check_player_draw(&mut self) {
         if is_mouse_button_down(MouseButton::Left) {
             let (mouse_x, mouse_y) = mouse_position();
-            self.cells[mouse_x as usize][mouse_y as usize].alive = true;
+            let x = (mouse_x / get_width() as f32) as i32;
+            let y = (mouse_y / get_height() as f32) as i32;
+            println!("Mouse X {} Mouse Y {}", mouse_x, mouse_y);
+            println!("x: {}, y: {}", x, y);
+
+            if x >= NUM_COLS && y >= NUM_ROWS {
+                let not_out_of_bounds_x = x - NUM_COLS;
+                let not_out_of_bounds_y = y - NUM_ROWS;
+                self.cells[(x - not_out_of_bounds_x - 1) as usize][(y - not_out_of_bounds_y - 1) as usize].alive = true;
+                self.cells[(x - not_out_of_bounds_x - 1) as usize][(y - not_out_of_bounds_y - 1) as usize].next_alive = true;
+            } else if y >= NUM_ROWS {
+                let not_out_of_bounds = y - NUM_ROWS;
+                self.cells[x as usize][(y - not_out_of_bounds - 1) as usize].alive = true;
+                self.cells[x as usize][(y - not_out_of_bounds - 1) as usize].next_alive = true;
+            } else if x >= NUM_COLS {
+                let not_out_of_bounds = x - NUM_COLS;
+                self.cells[(x - not_out_of_bounds - 1) as usize][y as usize].alive = true;
+                self.cells[(x - not_out_of_bounds - 1) as usize][y as usize].next_alive = true;
+            } else {
+                self.cells[x as usize][y as usize].alive = true;
+                self.cells[x as usize][y as usize].next_alive = true;
+            }
         }
     }
 }

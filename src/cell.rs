@@ -1,6 +1,8 @@
 use macroquad::color::WHITE;
+use macroquad::input::{is_mouse_button_down, mouse_position, MouseButton};
 use macroquad::prelude::draw_rectangle;
 use macroquad::rand::gen_range;
+use crate::config::{NUM_COLS, NUM_ROWS};
 use crate::util::{get_height, get_width};
 
 pub struct Cell {
@@ -19,7 +21,7 @@ impl Cell {
             next_alive: false,
         }
     }
-    pub fn draw(&self) {
+    pub fn draw(&mut self) {
         if self.alive {
             draw_rectangle(self.grid_x * get_width(), self.grid_y * get_height(), get_width(), get_height(), WHITE);
         }
