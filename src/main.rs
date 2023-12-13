@@ -1,10 +1,9 @@
-mod cell;
-mod game_world;
-mod config;
-mod util;
-use macroquad::{main};
 use macroquad::prelude::*;
-
+use macroquad::main;
+mod cell;
+mod config;
+mod game_world;
+mod util;
 
 fn window_conf() -> Conf {
     Conf {
@@ -23,23 +22,18 @@ fn window_conf() -> Conf {
 #[main(window_conf)]
 async fn main() {
     let mut world = game_world::GameWorld::new();
-    let mut paused = false;
+
     loop {
-        if paused == true {
-            next_frame().await
-        }
         world.check_surrounding();
         world.check_player_draw();
         clear_background(BLACK);
 
-
         for row in world.cells.iter_mut() {
             for cell in row {
-                cell.draw()
+                cell.draw();
             }
         }
 
         next_frame().await
     }
 }
-

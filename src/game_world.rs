@@ -1,7 +1,6 @@
-use macroquad::input::{is_mouse_button_down, is_mouse_button_pressed, mouse_position, MouseButton};
-
-use crate::config::{NUM_COLS, NUM_ROWS};
+use macroquad::input::{is_mouse_button_down, mouse_position, MouseButton};
 use crate::cell::Cell;
+use crate::config::{NUM_COLS, NUM_ROWS};
 use crate::util::{get_height, get_width};
 
 pub struct GameWorld {
@@ -12,9 +11,7 @@ impl GameWorld {
     pub fn new() -> GameWorld {
         let grid = GameWorld::create_grid();
 
-        GameWorld {
-            cells: grid
-        }
+        GameWorld { cells: grid }
     }
 
     pub fn create_grid() -> Vec<Vec<Cell>> {
@@ -32,23 +29,21 @@ impl GameWorld {
 
     pub fn is_alive(&self, x: i32, y: i32) -> i32 {
         if x < 0 || x >= NUM_ROWS || y < 0 || y >= NUM_COLS {
-            return 0
+            return 0;
         }
 
         return if self.cells[x as usize][y as usize].alive {
             1
-        } else { 0 }
+        } else {
+            0
+        };
     }
-
-    // fn grid_to_index(&self, x: i32, y: i32) -> usize {
-    //     (x + (y * NUM_COLS)) as usize
-    // }
 
     pub fn check_surrounding(&mut self) {
         for x in 0..NUM_COLS {
             for y in 0..NUM_ROWS {
                 if x < 0 || x >= NUM_ROWS || y < 0 || y >= NUM_COLS {
-                    continue
+                    continue;
                 }
 
                 let num_alive = self.is_alive(x - 1, y - 1)
@@ -61,7 +56,8 @@ impl GameWorld {
                     + self.is_alive(x + 1, y + 1);
 
                 if num_alive == 2 {
-                    self.cells[x as usize][y as usize].next_alive = self.cells[x as usize][y as usize].alive;
+                    self.cells[x as usize][y as usize].next_alive =
+                        self.cells[x as usize][y as usize].alive;
                 } else if num_alive == 3 {
                     self.cells[x as usize][y as usize].next_alive = true;
                 } else {
@@ -81,14 +77,18 @@ impl GameWorld {
             let (mouse_x, mouse_y) = mouse_position();
             let x = (mouse_x / get_width() as f32) as i32;
             let y = (mouse_y / get_height() as f32) as i32;
-            println!("Mouse X {} Mouse Y {}", mouse_x, mouse_y);
-            println!("x: {}, y: {}", x, y);
+            dbg!("Mouse X {} Mouse Y {}", mouse_x, mouse_y);
+            dbg!("x: {}, y: {}", x, y);
 
             if x >= NUM_COLS && y >= NUM_ROWS {
                 let not_out_of_bounds_x = x - NUM_COLS;
                 let not_out_of_bounds_y = y - NUM_ROWS;
-                self.cells[(x - not_out_of_bounds_x - 1) as usize][(y - not_out_of_bounds_y - 1) as usize].alive = true;
-                self.cells[(x - not_out_of_bounds_x - 1) as usize][(y - not_out_of_bounds_y - 1) as usize].next_alive = true;
+                self.cells[(x - not_out_of_bounds_x - 1) as usize]
+                    [(y - not_out_of_bounds_y - 1) as usize]
+                    .alive = true;
+                self.cells[(x - not_out_of_bounds_x - 1) as usize]
+                    [(y - not_out_of_bounds_y - 1) as usize]
+                    .next_alive = true;
             } else if y >= NUM_ROWS {
                 let not_out_of_bounds = y - NUM_ROWS;
                 self.cells[x as usize][(y - not_out_of_bounds - 1) as usize].alive = true;
