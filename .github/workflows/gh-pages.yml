@@ -1,0 +1,43 @@
+name: Deploy static content to Pages
+
+on:
+  push:
+    branches: [ "release" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install WASM Target
+        run: rustup target install wasm32-unknown-unknown
+      - name: Build
+        run: cargo build --release --target wasm32-unknown-unknown --verbose
+      - name: Move WASM file
+        run: cp ./target/wasm32-unknown-unknown/release/game-of-life.wasm ./webasm/game-of-life.wasm
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload Webasm
+        uses: actions/upload-pages-artifact@v2.0.0
+        with:
+          path: './webasm'
+      - name: Deploy GitHub Pages site
+        uses: actions/deploy-pages@v3
