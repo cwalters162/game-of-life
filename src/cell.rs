@@ -29,4 +29,11 @@ impl Cell {
             );
         }
     }
+
+    pub fn toggle_alive(&mut self) -> () {
+        self.alive = !self.alive
+    }
+    pub fn toggle_next_alive(&mut self) -> () {
+        self.next_alive = !self.next_alive
+    }
 }

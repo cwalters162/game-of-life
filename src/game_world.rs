@@ -85,21 +85,21 @@ impl GameWorld {
                 let not_out_of_bounds_y = y - NUM_ROWS;
                 self.cells[(x - not_out_of_bounds_x - 1) as usize]
                     [(y - not_out_of_bounds_y - 1) as usize]
-                    .alive = true;
+                    .toggle_alive();
                 self.cells[(x - not_out_of_bounds_x - 1) as usize]
                     [(y - not_out_of_bounds_y - 1) as usize]
-                    .next_alive = true;
+                    .toggle_next_alive();
             } else if y >= NUM_ROWS {
                 let not_out_of_bounds = y - NUM_ROWS;
-                self.cells[x as usize][(y - not_out_of_bounds - 1) as usize].alive = true;
-                self.cells[x as usize][(y - not_out_of_bounds - 1) as usize].next_alive = true;
+                self.cells[x as usize][(y - not_out_of_bounds - 1) as usize].toggle_alive();
+                self.cells[x as usize][(y - not_out_of_bounds - 1) as usize].toggle_next_alive();;
             } else if x >= NUM_COLS {
                 let not_out_of_bounds = x - NUM_COLS;
-                self.cells[(x - not_out_of_bounds - 1) as usize][y as usize].alive = true;
-                self.cells[(x - not_out_of_bounds - 1) as usize][y as usize].next_alive = true;
+                self.cells[(x - not_out_of_bounds - 1) as usize][y as usize].toggle_alive();
+                self.cells[(x - not_out_of_bounds - 1) as usize][y as usize].toggle_next_alive();;
             } else {
-                self.cells[x as usize][y as usize].alive = true;
-                self.cells[x as usize][y as usize].next_alive = true;
+                self.cells[x as usize][y as usize].toggle_alive();
+                self.cells[x as usize][y as usize].toggle_next_alive();;
             }
         }
     }
