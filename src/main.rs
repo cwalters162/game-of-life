@@ -1,13 +1,12 @@
 use macroquad::prelude::*;
-use macroquad::{hash, main};
-use macroquad::ui::root_ui;
-use macroquad::ui::widgets::{Group, Window};
-use crate::config::NUM_ROWS;
+use macroquad::{main};
+use crate::ui::render_ui;
 
 mod cell;
 mod config;
 mod game_world;
 mod util;
+mod ui;
 
 fn window_conf() -> Conf {
     Conf {
@@ -26,42 +25,52 @@ fn window_conf() -> Conf {
 #[main(window_conf)]
 async fn main() {
 
-    let mut world = game_world::GameWorld::new();
+    //Initialization of the game state
+    let rows: f32 = 200.;
+    let columns: f32 = 200.;
+
+    let mut previous_time = get_time();
+    let mut lag = 0.0;
+
+    let mut world = game_world::GameWorld::new(&rows, &columns);
     let mut paused = true;
 
+    let mut tick = 0;
+    let mut tick_speed = 0.50;
+
     loop {
+        let current_time = get_time();
+        let elapsed = current_time - previous_time;
+        previous_time = get_time();
+        lag += elapsed;
         clear_background(BLACK);
 
-
+        //process player input
         world.check_player_draw();
 
-        if !paused {
+        //update the game state
+        while lag >= tick_speed {
 
-            world.check_surrounding();
+            if !paused {
+                world.check_surrounding();
+                tick += 1;
+            };
 
-        };
+            lag -= tick_speed;
+        }
 
+
+        //Should this be in a system function
         for row in world.cells.iter_mut() {
             for cell in row {
                 cell.draw();
             }
         }
 
-
-        Window::new(hash!(), vec2(10., 10.), vec2(200., 200.))
-            .label("Settings").titlebar(true)
-            .ui(&mut root_ui(), |ui| {
-                ui.label(vec2(10., 10.),"Testing");
-                ui.label(None, "Some random text");
-                if ui.button(None, "Pause/Play") {
-                    paused = !paused;
-                }
-                ui.slider(hash!(), "COLUMNS", 0f32..255f32, &mut 0.);
-                ui.slider(hash!(), "ROWS", 0f32..255f32, &mut 0.);
-
-                ui.separator();
-            });
+        //render the UI separately from the game updates.
+        render_ui(&mut paused, &tick, &mut tick_speed);
 
         next_frame().await
     }
 }
+

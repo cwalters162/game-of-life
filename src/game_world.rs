@@ -8,18 +8,20 @@ pub struct GameWorld {
 }
 
 impl GameWorld {
-    pub fn new() -> GameWorld {
-        let grid = GameWorld::create_grid();
+    pub fn new(rows: &f32, columns: &f32) -> GameWorld {
+        let grid = GameWorld::create_grid(&rows, &columns);
 
         GameWorld { cells: grid }
     }
 
-    pub fn create_grid() -> Vec<Vec<Cell>> {
+    pub fn create_grid(float_rows: &f32, float_columns: &f32) -> Vec<Vec<Cell>> {
         let mut cells = Vec::<Vec<Cell>>::new();
+        let rows: i32 = float_rows.round() as i32;
+        let columns: i32 = float_columns.round() as i32;
 
-        for r in 0..NUM_ROWS {
+        for r in 0..rows{
             cells.push(Vec::<Cell>::new());
-            for c in 0..NUM_COLS {
+            for c in 0..columns {
                 cells[r as usize].push(Cell::new(r as f32, c as f32))
             }
         }
@@ -77,8 +79,8 @@ impl GameWorld {
             let (mouse_x, mouse_y) = mouse_position();
             let x = (mouse_x / get_width() as f32) as i32;
             let y = (mouse_y / get_height() as f32) as i32;
-            dbg!("Mouse X {} Mouse Y {}", mouse_x, mouse_y);
-            dbg!("x: {}, y: {}", x, y);
+            // dbg!("Mouse X {} Mouse Y {}", mouse_x, mouse_y);
+            // dbg!("x: {}, y: {}", x, y);
 
             if x >= NUM_COLS && y >= NUM_ROWS {
                 let not_out_of_bounds_x = x - NUM_COLS;

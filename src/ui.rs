@@ -1,0 +1,45 @@
+use macroquad::hash;
+use macroquad::math::vec2;
+use macroquad::ui::root_ui;
+use macroquad::ui::widgets::Window;
+
+pub fn render_ui (paused: &mut bool, tick: &i32, tick_speed: &mut f64) -> () {
+    Window::new(hash!(), vec2(10., 10.), vec2(250., 250.))
+        .label("Settings").titlebar(true)
+        .ui(&mut root_ui(), |ui| {
+
+            ui.label(vec2(10., 10.), &*tick.to_string());
+
+            ui.separator();
+            if ui.button(None, "Play") {
+                *paused = false;
+            }
+            ui.same_line(0.0); // THIS CONNECTS THE WIDGET ABOVE AND BLOW
+            if ui.button(None, "Pause") {
+                *paused = true;
+            }
+            ui.label(None, "Total Ticks: ");
+            ui.same_line(0.);
+            ui.label(None, &*tick.clone().to_string());
+            if ui.button(None, "Slowest") {
+                *tick_speed = 1.0;
+            }
+            ui.same_line(0.0);
+            ui.same_line(0.0);
+            if ui.button(None, "Slow") {
+                *tick_speed = 0.75;
+            }
+            ui.same_line(0.0);
+            if ui.button(None, "Normal") {
+                *tick_speed = 0.50;
+            }
+            ui.same_line(0.0);
+            if ui.button(None, "Fast") {
+                *tick_speed = 0.25;
+            }
+            ui.same_line(0.0);
+            if ui.button(None, "Fastest") {
+                *tick_speed = 0.1;
+            }
+        });
+}
