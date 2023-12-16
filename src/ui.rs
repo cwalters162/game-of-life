@@ -2,15 +2,15 @@ use macroquad::hash;
 use macroquad::math::vec2;
 use macroquad::ui::root_ui;
 use macroquad::ui::widgets::Window;
+use crate::game_world::GameWorld;
 
-pub fn render_ui (paused: &mut bool, tick: &i32, tick_speed: &mut f64) -> () {
+pub fn render_ui (paused: &mut bool, tick: &i32, tick_speed: &mut f64, world: &mut GameWorld) -> () {
+
+    world.draw_cells();
+
     Window::new(hash!(), vec2(10., 10.), vec2(250., 250.))
         .label("Settings").titlebar(true)
         .ui(&mut root_ui(), |ui| {
-
-            ui.label(vec2(10., 10.), &*tick.to_string());
-
-            ui.separator();
             if ui.button(None, "Play") {
                 *paused = false;
             }
@@ -41,5 +41,12 @@ pub fn render_ui (paused: &mut bool, tick: &i32, tick_speed: &mut f64) -> () {
             if ui.button(None, "Fastest") {
                 *tick_speed = 0.1;
             }
+            if ui.button(None, "Clear") {
+                world.clear();
+            }
+            ui.same_line(0.);
+            if ui.button(None, "Random") {
+                world.randomize()
+            };
         });
 }

@@ -1,4 +1,6 @@
 use macroquad::input::{is_mouse_button_down, mouse_position, MouseButton};
+use macroquad::rand::{gen_range, rand, srand};
+use macroquad::time::get_time;
 use crate::cell::Cell;
 use crate::config::{NUM_COLS, NUM_ROWS};
 use crate::util::{get_height, get_width};
@@ -74,6 +76,14 @@ impl GameWorld {
         }
     }
 
+    pub fn draw_cells(&mut self) {
+        for row in self.cells.iter_mut() {
+            for mut cell in row {
+                cell.draw();
+            }
+        }
+    }
+
     pub(crate) fn check_player_draw(&mut self) {
         if is_mouse_button_down(MouseButton::Left) {
             let (mouse_x, mouse_y) = mouse_position();
@@ -102,6 +112,21 @@ impl GameWorld {
             } else {
                 self.cells[x as usize][y as usize].toggle_alive();
                 self.cells[x as usize][y as usize].toggle_next_alive();;
+            }
+        }
+    }
+
+    pub fn clear(&mut self) {
+        for row in self.cells.iter_mut() {
+            for mut cell in row {
+                cell.alive = false;
+            }
+        }
+    }
+    pub fn randomize(&mut self) {
+        for row in self.cells.iter_mut() {
+            for mut cell in row {
+                cell.alive = gen_range(0, 10) >= 5;
             }
         }
     }

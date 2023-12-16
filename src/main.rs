@@ -59,16 +59,8 @@ async fn main() {
             lag -= tick_speed;
         }
 
-
-        //Should this be in a system function
-        for row in world.cells.iter_mut() {
-            for cell in row {
-                cell.draw();
-            }
-        }
-
         //render the UI separately from the game updates.
-        render_ui(&mut paused, &tick, &mut tick_speed);
+        render_ui(&mut paused, &tick, &mut tick_speed, &mut world);
 
         next_frame().await
     }
