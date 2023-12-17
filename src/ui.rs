@@ -32,19 +32,19 @@ pub fn render_ui (paused: &mut bool, tick: &mut i32, tick_speed: &mut f64, world
             ui.same_line(0.0);
             ui.same_line(0.0);
             if ui.button(None, "Slow") {
-                *tick_speed = 0.75;
-            }
-            ui.same_line(0.0);
-            if ui.button(None, "Normal") {
                 *tick_speed = 0.50;
             }
             ui.same_line(0.0);
+            if ui.button(None, "Normal") {
+                *tick_speed = 0.1;
+            }
+            ui.same_line(0.0);
             if ui.button(None, "Fast") {
-                *tick_speed = 0.25;
+                *tick_speed = 0.05;
             }
             ui.same_line(0.0);
             if ui.button(None, "Fastest") {
-                *tick_speed = 0.1;
+                *tick_speed = 0.01;
             }
             if ui.button(None, "Clear") {
                 world.clear();
