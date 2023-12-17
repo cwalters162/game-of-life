@@ -1,6 +1,5 @@
-use macroquad::input::{is_mouse_button_down, mouse_position, MouseButton};
-use macroquad::rand::{gen_range, rand, srand};
-use macroquad::time::get_time;
+use macroquad::input::{is_mouse_button_pressed, mouse_position, MouseButton};
+use macroquad::rand::{gen_range};
 use crate::cell::Cell;
 use crate::config::{NUM_COLS, NUM_ROWS};
 use crate::util::{get_height, get_width};
@@ -84,34 +83,36 @@ impl GameWorld {
         }
     }
 
-    pub(crate) fn check_player_draw(&mut self) {
-        if is_mouse_button_down(MouseButton::Left) {
+    pub fn check_player_draw(&mut self) {
+
+        if is_mouse_button_pressed(MouseButton::Left) {
             let (mouse_x, mouse_y) = mouse_position();
-            let x = (mouse_x / get_width() as f32) as i32;
-            let y = (mouse_y / get_height() as f32) as i32;
+            let x = (mouse_x / get_width()) as i32;
+            let y = (mouse_y / get_height()) as i32;
             // dbg!("Mouse X {} Mouse Y {}", mouse_x, mouse_y);
             // dbg!("x: {}, y: {}", x, y);
 
             if x >= NUM_COLS && y >= NUM_ROWS {
                 let not_out_of_bounds_x = x - NUM_COLS;
                 let not_out_of_bounds_y = y - NUM_ROWS;
-                self.cells[(x - not_out_of_bounds_x - 1) as usize]
-                    [(y - not_out_of_bounds_y - 1) as usize]
-                    .toggle_alive();
-                self.cells[(x - not_out_of_bounds_x - 1) as usize]
-                    [(y - not_out_of_bounds_y - 1) as usize]
-                    .toggle_next_alive();
+                let mut cell = &mut self.cells[(x - not_out_of_bounds_x - 1) as usize]
+                    [(y - not_out_of_bounds_y - 1) as usize];
+                cell.toggle_alive();
+                cell.toggle_next_alive();
             } else if y >= NUM_ROWS {
                 let not_out_of_bounds = y - NUM_ROWS;
-                self.cells[x as usize][(y - not_out_of_bounds - 1) as usize].toggle_alive();
-                self.cells[x as usize][(y - not_out_of_bounds - 1) as usize].toggle_next_alive();;
+                let mut cell = &mut self.cells[x as usize][(y - not_out_of_bounds - 1) as usize];
+                cell.toggle_alive();
+                cell.toggle_next_alive();
             } else if x >= NUM_COLS {
                 let not_out_of_bounds = x - NUM_COLS;
-                self.cells[(x - not_out_of_bounds - 1) as usize][y as usize].toggle_alive();
-                self.cells[(x - not_out_of_bounds - 1) as usize][y as usize].toggle_next_alive();;
+                let mut cell = &mut self.cells[(x - not_out_of_bounds - 1) as usize][y as usize];
+                cell.toggle_alive();
+                cell.toggle_next_alive();
             } else {
-                self.cells[x as usize][y as usize].toggle_alive();
-                self.cells[x as usize][y as usize].toggle_next_alive();;
+                let mut cell = &mut self.cells[x as usize][y as usize];
+                cell.toggle_alive();
+                cell.toggle_next_alive();
             }
         }
     }
