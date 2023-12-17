@@ -1,6 +1,6 @@
-use crate::util::{get_height, get_width};
-use macroquad::color::WHITE;
+use macroquad::color::{RED, WHITE};
 use macroquad::prelude::draw_rectangle;
+use macroquad::shapes::draw_rectangle_lines;
 
 pub struct Cell {
     grid_x: i32,
@@ -19,14 +19,21 @@ impl Cell {
         }
     }
     pub fn draw(&mut self) {
+        let scale = 1f32;
         if self.alive {
             draw_rectangle(
-                self.grid_x as f32 * get_width(),
-                self.grid_y as f32 * get_height(),
-                get_width(),
-                get_height(),
+                self.grid_x as f32 * scale,
+                self.grid_y as f32 * scale,
+                scale,
+                scale,
                 WHITE,
             );
+            draw_rectangle_lines(self.grid_x as f32 * scale,
+                                 self.grid_y as f32 * scale,
+                                 scale,
+                                 scale,
+                                 scale / 10.,
+                                 RED)
         }
     }
 

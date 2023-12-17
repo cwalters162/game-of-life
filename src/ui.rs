@@ -5,10 +5,7 @@ use macroquad::ui::widgets::Window;
 use crate::game_world::GameWorld;
 
 pub fn render_ui (paused: &mut bool, tick: &mut i32, tick_speed: &mut f64, world: &mut GameWorld) -> () {
-
-    world.draw_cells();
-
-    Window::new(hash!(), vec2(10., 10.), vec2(250., 250.))
+    Window::new(hash!(), vec2(0., 400.), vec2(250., 250.))
         .label("Settings").titlebar(true)
         .ui(&mut root_ui(), |ui| {
             if ui.button(None, "Play") {
