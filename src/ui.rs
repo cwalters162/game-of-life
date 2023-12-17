@@ -47,10 +47,12 @@ pub fn render_ui (paused: &mut bool, tick: &mut i32, tick_speed: &mut f64, world
                 *tick_speed = 0.01;
             }
             if ui.button(None, "Clear") {
+                *tick = 0;
                 world.clear();
             }
             ui.same_line(0.);
             if ui.button(None, "Random") {
+                *tick = 0;
                 world.randomize()
             };
         });

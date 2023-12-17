@@ -1,4 +1,3 @@
-use std::collections::{BTreeMap};
 use macroquad::input::{is_mouse_button_pressed, mouse_position, MouseButton};
 use macroquad::rand::{gen_range};
 use crate::cell::Cell;
