@@ -4,7 +4,7 @@ use macroquad::ui::root_ui;
 use macroquad::ui::widgets::Window;
 use crate::game_world::GameWorld;
 
-pub fn render_ui (paused: &mut bool, tick: &i32, tick_speed: &mut f64, world: &mut GameWorld) -> () {
+pub fn render_ui (paused: &mut bool, tick: &mut i32, tick_speed: &mut f64, world: &mut GameWorld) -> () {
 
     world.draw_cells();
 
@@ -21,6 +21,11 @@ pub fn render_ui (paused: &mut bool, tick: &i32, tick_speed: &mut f64, world: &m
             ui.label(None, "Total Ticks: ");
             ui.same_line(0.);
             ui.label(None, &*tick.clone().to_string());
+            ui.same_line(0.);
+            if ui.button(None, "Step") {
+                world.update();
+                *tick += 1;
+            }
             if ui.button(None, "Slowest") {
                 *tick_speed = 1.0;
             }

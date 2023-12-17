@@ -3,14 +3,14 @@ use macroquad::color::WHITE;
 use macroquad::prelude::draw_rectangle;
 
 pub struct Cell {
-    grid_x: f32,
-    grid_y: f32,
+    grid_x: i32,
+    grid_y: i32,
     pub alive: bool,
     pub next_alive: bool,
 }
 
 impl Cell {
-    pub fn new(grid_x: f32, grid_y: f32) -> Cell {
+    pub fn new(grid_x: i32, grid_y: i32) -> Cell {
         Cell {
             grid_x,
             grid_y,
@@ -21,8 +21,8 @@ impl Cell {
     pub fn draw(&mut self) {
         if self.alive {
             draw_rectangle(
-                self.grid_x * get_width(),
-                self.grid_y * get_height(),
+                self.grid_x as f32 * get_width(),
+                self.grid_y as f32 * get_height(),
                 get_width(),
                 get_height(),
                 WHITE,

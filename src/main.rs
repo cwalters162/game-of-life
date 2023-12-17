@@ -52,7 +52,7 @@ async fn main() {
         while lag >= tick_speed {
 
             if !paused {
-                world.check_surrounding();
+                world.update();
                 tick += 1;
             };
 
@@ -60,7 +60,7 @@ async fn main() {
         }
 
         //render the UI separately from the game updates.
-        render_ui(&mut paused, &tick, &mut tick_speed, &mut world);
+        render_ui(&mut paused, &mut tick, &mut tick_speed, &mut world);
 
         next_frame().await
     }

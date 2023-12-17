@@ -1,3 +1,4 @@
+use std::collections::{BTreeMap};
 use macroquad::input::{is_mouse_button_pressed, mouse_position, MouseButton};
 use macroquad::rand::{gen_range};
 use crate::cell::Cell;
@@ -5,7 +6,7 @@ use crate::config::{NUM_COLS, NUM_ROWS};
 use crate::util::{get_height, get_width};
 
 pub struct GameWorld {
-    pub cells: Vec<Vec<Cell>>,
+    pub cells: Vec<Vec<Cell>>
 }
 
 impl GameWorld {
@@ -23,7 +24,7 @@ impl GameWorld {
         for r in 0..rows{
             cells.push(Vec::<Cell>::new());
             for c in 0..columns {
-                cells[r as usize].push(Cell::new(r as f32, c as f32))
+                cells[r as usize].push(Cell::new(r, c))
             }
         }
 
@@ -130,5 +131,9 @@ impl GameWorld {
                 cell.alive = gen_range(0, 10) >= 5;
             }
         }
+    }
+
+    pub fn update(&mut self) {
+        self.check_surrounding();
     }
 }
