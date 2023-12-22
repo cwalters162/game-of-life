@@ -1,7 +1,7 @@
-use macroquad::prelude::*;
-use macroquad::{main};
-use macroquad::prelude::scene::camera_pos;
 use crate::ui::render_ui;
+use macroquad::main;
+
+use macroquad::prelude::*;
 mod cell;
 mod game_world;
 mod ui;
@@ -22,10 +22,9 @@ fn window_conf() -> Conf {
 
 #[main(window_conf)]
 async fn main() {
-
     //Initialization of the game state
     let rows = 50;
-    let columns= 50;
+    let columns = 50;
 
     let mut previous_time = get_time();
     let mut lag = 0.0;
@@ -51,7 +50,7 @@ async fn main() {
             (_x, y) if y != 0.0 => {
                 // Normalize mouse wheel values is browser (chromium: 53, firefox: 3)
                 #[cfg(target_arch = "wasm32")]
-                    let y = if y < 0.0 {
+                let y = if y < 0.0 {
                     -1.0
                 } else if y > 0.0 {
                     1.0
@@ -93,7 +92,6 @@ async fn main() {
 
         //update the game state
         while lag >= tick_speed {
-
             if !paused {
                 world.update();
                 tick += 1;
@@ -106,12 +104,25 @@ async fn main() {
         set_default_camera();
         //render the UI separately from the game updates.
         render_ui(&mut paused, &mut tick, &mut tick_speed, &mut world);
-        draw_text(&*format!("OFFSET: {}, {}", offset.0, offset.1), 0., 32., 32., RED);
-        draw_text(&*format!("ZOOM: {}", zoom), 0., 64., 32., RED);
-        let screen_to_world = cam.screen_to_world(Vec2::from(mouse_position()));
-        draw_text(&*format!("Screen to World: {}", screen_to_world), 0., 96., 32., RED);
 
+        if cfg!(debug_assertions) {
+            draw_text(
+                &*format!("OFFSET: {}, {}", offset.0, offset.1),
+                0.,
+                32.,
+                32.,
+                RED,
+            );
+            draw_text(&*format!("ZOOM: {}", zoom), 0., 64., 32., RED);
+            let screen_to_world = cam.screen_to_world(Vec2::from(mouse_position()));
+            draw_text(
+                &*format!("Screen to World: {}", screen_to_world),
+                0.,
+                96.,
+                32.,
+                RED,
+            );
+        }
         next_frame().await
     }
 }
-

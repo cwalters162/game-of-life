@@ -1,5 +1,5 @@
-use macroquad::color::{RED, WHITE};
-use macroquad::prelude::{BLACK, Color, draw_rectangle};
+use macroquad::color::WHITE;
+use macroquad::prelude::{draw_rectangle, BLACK};
 use macroquad::shapes::draw_rectangle_lines;
 
 #[derive(Clone)]
@@ -10,10 +10,7 @@ pub struct Cell {
 
 impl Cell {
     pub fn new(grid_x: i32, grid_y: i32) -> Cell {
-        Cell {
-            grid_x,
-            grid_y,
-        }
+        Cell { grid_x, grid_y }
     }
     pub fn draw(&mut self) {
         let scale = 1f32;
@@ -30,7 +27,7 @@ impl Cell {
             scale,
             scale,
             scale / 10.,
-            BLACK
+            BLACK,
         );
     }
 }

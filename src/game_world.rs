@@ -1,14 +1,14 @@
-use std::collections::{BTreeMap, HashMap, HashSet};
-use macroquad::input::{is_mouse_button_pressed, mouse_position, MouseButton};
-use macroquad::prelude::{Camera2D, get_time, screen_height, screen_width, Vec2, vec2};
-use macroquad::rand::{gen_range, rand, srand};
 use crate::cell::Cell;
+use macroquad::input::{is_mouse_button_pressed, mouse_position, MouseButton};
+use macroquad::prelude::{Camera2D, Vec2};
+use macroquad::rand::gen_range;
+use std::collections::{BTreeMap, HashMap};
 
 #[derive(Clone)]
 pub struct GameWorld {
-    pub rows: i32,
-    pub cols: i32,
-    pub cells: BTreeMap<Pos2d, Cell>
+    pub rows: f32,
+    pub cols: f32,
+    pub cells: BTreeMap<Pos2d, Cell>,
 }
 
 impl GameWorld {
@@ -16,9 +16,9 @@ impl GameWorld {
         let grid = GameWorld::create_grid(rows, cols);
 
         GameWorld {
-            rows,
-            cols,
-            cells: grid
+            rows: rows as f32,
+            cols: cols as f32,
+            cells: grid,
         }
     }
 
@@ -29,7 +29,7 @@ impl GameWorld {
         let y_top = rows / 2 * -1;
         let y_bottom = rows / 2;
 
-        for y in y_top..y_bottom{
+        for y in y_top..y_bottom {
             for x in x_left..x_right {
                 if gen_range(1, 100) > 50 {
                     grid.insert(Pos2d { x, y }, Cell::new(x, y));
@@ -63,11 +63,20 @@ impl GameWorld {
 
             let mut num_alive = 0;
             if self.is_alive(pos.x - 1, pos.y - 1) {
-                    num_alive += 1;
+                num_alive += 1;
             } else {
-                match self.number_of_living_neighbors(&Pos2d {x: pos.x - 1, y: pos.y - 1}) {
+                match self.number_of_living_neighbors(&Pos2d {
+                    x: pos.x - 1,
+                    y: pos.y - 1,
+                }) {
                     3 => {
-                        new_cells.insert(Pos2d {x: pos.x - 1, y: pos.y - 1}, Cell::new(pos.x - 1, pos.y - 1));
+                        new_cells.insert(
+                            Pos2d {
+                                x: pos.x - 1,
+                                y: pos.y - 1,
+                            },
+                            Cell::new(pos.x - 1, pos.y - 1),
+                        );
                     }
                     _ => {}
                 }
@@ -75,9 +84,18 @@ impl GameWorld {
             if self.is_alive(pos.x, pos.y - 1) {
                 num_alive += 1;
             } else {
-                match self.number_of_living_neighbors(&Pos2d {x: pos.x, y: pos.y - 1}) {
+                match self.number_of_living_neighbors(&Pos2d {
+                    x: pos.x,
+                    y: pos.y - 1,
+                }) {
                     3 => {
-                        new_cells.insert(Pos2d {x: pos.x, y: pos.y - 1}, Cell::new(pos.x, pos.y - 1));
+                        new_cells.insert(
+                            Pos2d {
+                                x: pos.x,
+                                y: pos.y - 1,
+                            },
+                            Cell::new(pos.x, pos.y - 1),
+                        );
                     }
                     _ => {}
                 }
@@ -85,9 +103,18 @@ impl GameWorld {
             if self.is_alive(pos.x + 1, pos.y - 1) {
                 num_alive += 1;
             } else {
-                match self.number_of_living_neighbors(&Pos2d {x: pos.x + 1, y: pos.y - 1}) {
+                match self.number_of_living_neighbors(&Pos2d {
+                    x: pos.x + 1,
+                    y: pos.y - 1,
+                }) {
                     3 => {
-                        new_cells.insert(Pos2d {x: pos.x + 1, y: pos.y - 1}, Cell::new(pos.x + 1, pos.y - 1));
+                        new_cells.insert(
+                            Pos2d {
+                                x: pos.x + 1,
+                                y: pos.y - 1,
+                            },
+                            Cell::new(pos.x + 1, pos.y - 1),
+                        );
                     }
                     _ => {}
                 }
@@ -95,9 +122,18 @@ impl GameWorld {
             if self.is_alive(pos.x - 1, pos.y) {
                 num_alive += 1;
             } else {
-                match self.number_of_living_neighbors(&Pos2d {x: pos.x - 1, y: pos.y }) {
+                match self.number_of_living_neighbors(&Pos2d {
+                    x: pos.x - 1,
+                    y: pos.y,
+                }) {
                     3 => {
-                        new_cells.insert(Pos2d {x: pos.x - 1, y: pos.y }, Cell::new(pos.x - 1, pos.y));
+                        new_cells.insert(
+                            Pos2d {
+                                x: pos.x - 1,
+                                y: pos.y,
+                            },
+                            Cell::new(pos.x - 1, pos.y),
+                        );
                     }
                     _ => {}
                 }
@@ -105,9 +141,18 @@ impl GameWorld {
             if self.is_alive(pos.x + 1, pos.y) {
                 num_alive += 1;
             } else {
-                match self.number_of_living_neighbors(&Pos2d {x: pos.x + 1, y: pos.y }) {
+                match self.number_of_living_neighbors(&Pos2d {
+                    x: pos.x + 1,
+                    y: pos.y,
+                }) {
                     3 => {
-                        new_cells.insert(Pos2d {x: pos.x + 1, y: pos.y }, Cell::new(pos.x + 1, pos.y));
+                        new_cells.insert(
+                            Pos2d {
+                                x: pos.x + 1,
+                                y: pos.y,
+                            },
+                            Cell::new(pos.x + 1, pos.y),
+                        );
                     }
                     _ => {}
                 }
@@ -115,9 +160,18 @@ impl GameWorld {
             if self.is_alive(pos.x - 1, pos.y + 1) {
                 num_alive += 1;
             } else {
-                match self.number_of_living_neighbors(&Pos2d {x: pos.x - 1, y: pos.y + 1}) {
+                match self.number_of_living_neighbors(&Pos2d {
+                    x: pos.x - 1,
+                    y: pos.y + 1,
+                }) {
                     3 => {
-                        new_cells.insert(Pos2d {x: pos.x - 1, y: pos.y + 1}, Cell::new(pos.x - 1, pos.y + 1));
+                        new_cells.insert(
+                            Pos2d {
+                                x: pos.x - 1,
+                                y: pos.y + 1,
+                            },
+                            Cell::new(pos.x - 1, pos.y + 1),
+                        );
                     }
                     _ => {}
                 }
@@ -125,9 +179,18 @@ impl GameWorld {
             if self.is_alive(pos.x, pos.y + 1) {
                 num_alive += 1;
             } else {
-                match self.number_of_living_neighbors(&Pos2d {x: pos.x, y: pos.y + 1 }) {
+                match self.number_of_living_neighbors(&Pos2d {
+                    x: pos.x,
+                    y: pos.y + 1,
+                }) {
                     3 => {
-                        new_cells.insert(Pos2d {x: pos.x, y: pos.y + 1 }, Cell::new(pos.x, pos.y + 1));
+                        new_cells.insert(
+                            Pos2d {
+                                x: pos.x,
+                                y: pos.y + 1,
+                            },
+                            Cell::new(pos.x, pos.y + 1),
+                        );
                     }
                     _ => {}
                 }
@@ -135,15 +198,23 @@ impl GameWorld {
             if self.is_alive(pos.x + 1, pos.y + 1) {
                 num_alive += 1;
             } else {
-                match self.number_of_living_neighbors(&Pos2d {x: pos.x + 1, y: pos.y + 1}) {
+                match self.number_of_living_neighbors(&Pos2d {
+                    x: pos.x + 1,
+                    y: pos.y + 1,
+                }) {
                     3 => {
-                        new_cells.insert(Pos2d {x: pos.x + 1, y: pos.y + 1}, Cell::new(pos.x + 1, pos.y + 1));
+                        new_cells.insert(
+                            Pos2d {
+                                x: pos.x + 1,
+                                y: pos.y + 1,
+                            },
+                            Cell::new(pos.x + 1, pos.y + 1),
+                        );
                     }
                     _ => {}
                 }
             }
             if num_alive == 2 || num_alive == 3 {
-
             } else {
                 pos_to_remove.push(pos);
             }
@@ -163,21 +234,23 @@ impl GameWorld {
     }
 
     pub fn check_player_draw(&mut self, cam: &Camera2D) {
-
         if is_mouse_button_pressed(MouseButton::Left) {
             let (mouse_x, mouse_y) = mouse_position();
             let screen_to_world = cam.screen_to_world(Vec2::from(mouse_position()));
 
-            let mut x = screen_to_world.x.floor() as i32;
-            let mut y = screen_to_world.y.floor() as i32;
+            let x = screen_to_world.x.floor() as i32;
+            let y = screen_to_world.y.floor() as i32;
 
             if cfg!(debug_assertions) {
                 println!("Mouse X {} Mouse Y {}", mouse_x, mouse_y);
-                println!("Screen_to_world X {} Mouse Y {}", screen_to_world.x, screen_to_world.y);
+                println!(
+                    "Screen_to_world X {} Mouse Y {}",
+                    screen_to_world.x, screen_to_world.y
+                );
                 println!("x: {}, y: {}", x, y);
             }
 
-            let pos = Pos2d {x, y};
+            let pos = Pos2d { x, y };
 
             match self.cells.contains_key(&pos) {
                 false => {
@@ -194,7 +267,7 @@ impl GameWorld {
         self.cells.clear();
     }
     pub fn randomize(&mut self) {
-        self.cells = GameWorld::create_grid(self.rows, self.cols)
+        self.cells = GameWorld::create_grid(self.rows as i32, self.cols as i32)
     }
 
     pub fn update(&mut self) {
@@ -231,8 +304,7 @@ impl GameWorld {
     }
 }
 
-#[derive(PartialOrd, PartialEq, Ord, Eq, Clone, Debug)]
-#[derive(Hash)]
+#[derive(PartialOrd, PartialEq, Ord, Eq, Clone, Debug, Hash)]
 pub struct Pos2d {
     x: i32,
     y: i32,
