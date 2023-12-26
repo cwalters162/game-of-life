@@ -21,14 +21,15 @@ pub fn render_ui(
             if ui.button(None, "Pause") {
                 *paused = true;
             }
-            ui.label(None, "Total Ticks: ");
-            ui.same_line(0.);
-            ui.label(None, &*tick.clone().to_string());
             ui.same_line(0.0);
             if ui.button(None, "Step") {
                 world.update();
                 *tick += 1;
             }
+
+            ui.label(None, "Total Ticks: ");
+            ui.same_line(0.);
+            ui.label(None, &*tick.clone().to_string());
 
             ui.label(None, "Total Living: ");
             ui.same_line(0.);
@@ -54,9 +55,8 @@ pub fn render_ui(
             if ui.button(None, "Fastest") {
                 *tick_speed = 0.01;
             }
-
-            ui.slider(hash!(), "Rows", 1f32..500f32, &mut world.rows);
-            ui.slider(hash!(), "Columns", 1f32..500f32, &mut world.cols);
+            ui.slider(hash!(), "Rows", 1f32..250f32, &mut world.rows);
+            ui.slider(hash!(), "Columns", 1f32..250f32, &mut world.cols);
             if ui.button(None, "Clear") {
                 *tick = 0;
                 world.clear();
