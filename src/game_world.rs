@@ -1,6 +1,5 @@
 use crate::cell::Cell;
-use macroquad::input::{is_mouse_button_pressed, mouse_position, MouseButton};
-use macroquad::prelude::{Camera2D, Vec2};
+use macroquad::prelude::{Camera2D, is_mouse_button_down, Vec2, is_mouse_button_pressed, mouse_position, MouseButton};
 use macroquad::rand::gen_range;
 use std::collections::{BTreeMap, HashMap};
 
@@ -9,6 +8,7 @@ pub struct GameWorld {
     pub rows: f32,
     pub cols: f32,
     pub cells: BTreeMap<Pos2d, Cell>,
+    draw_mode: DrawMode,
 }
 
 impl GameWorld {
@@ -19,6 +19,7 @@ impl GameWorld {
             rows: rows as f32,
             cols: cols as f32,
             cells: grid,
+            draw_mode: DrawMode::AddCell,
         }
     }
 
@@ -44,22 +45,11 @@ impl GameWorld {
         self.cells.contains_key(&Pos2d { x, y })
     }
 
-    //TODO: """Once Binary Tree is introduced be sure to change this so that
-    // if there is a living cell and any of the neighboring "missing cells"
-    // has 2 or more living neighbors to then be inserted one all the cells have been checked.
-    // which means there will likely be a Vec of positions to insert new living cells at the end of the checks.
     pub fn check_cells(&mut self) {
         let mut pos_to_remove = Vec::<Pos2d>::new();
         let mut new_cells = HashMap::<Pos2d, Cell>::new();
-        // Check the current cells neighbors,
-        // if it's alive move on
-        // if it's dead, check it's neighbors, add to the pos list of checked cells
-        // if it's in that list check if it needs to be a new cell or not
-        // set current cell dead or alive.
+
         for (pos, _) in self.cells.clone() {
-            //-1, -1 | 0,-1 | 1, -1
-            //-1,  0 | 0, 0 | 1,  0
-            //-1,  1 | 0, 1 | 1,  1
 
             let mut num_alive = 0;
             if self.is_alive(pos.x - 1, pos.y - 1) {
@@ -235,6 +225,25 @@ impl GameWorld {
 
     pub fn check_player_draw(&mut self, cam: &Camera2D) {
         if is_mouse_button_pressed(MouseButton::Left) {
+            let screen_to_world = cam.screen_to_world(Vec2::from(mouse_position()));
+
+            let x = screen_to_world.x.floor() as i32;
+            let y = screen_to_world.y.floor() as i32;
+
+            let pos = Pos2d { x, y };
+
+            match self.cells.contains_key(&pos) {
+                false => {
+                    self.draw_mode = DrawMode::AddCell;
+                }
+                true => {
+                    self.draw_mode = DrawMode::RemoveCell
+                }
+            }
+        }
+
+
+        if is_mouse_button_down(MouseButton::Left) {
             let (mouse_x, mouse_y) = mouse_position();
             let screen_to_world = cam.screen_to_world(Vec2::from(mouse_position()));
 
@@ -252,11 +261,11 @@ impl GameWorld {
 
             let pos = Pos2d { x, y };
 
-            match self.cells.contains_key(&pos) {
-                false => {
+            match self.draw_mode {
+                DrawMode::AddCell => {
                     self.cells.insert(pos, Cell::new(x, y));
                 }
-                true => {
+                DrawMode::RemoveCell => {
                     self.cells.remove(&pos);
                 }
             }
@@ -308,4 +317,10 @@ impl GameWorld {
 pub struct Pos2d {
     x: i32,
     y: i32,
+}
+
+#[derive(Clone)]
+enum DrawMode {
+    AddCell,
+    RemoveCell,
 }
