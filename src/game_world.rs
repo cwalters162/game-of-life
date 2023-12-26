@@ -1,5 +1,7 @@
 use crate::cell::Cell;
-use macroquad::prelude::{Camera2D, is_mouse_button_down, Vec2, is_mouse_button_pressed, mouse_position, MouseButton};
+use macroquad::prelude::{
+    is_mouse_button_down, is_mouse_button_pressed, mouse_position, Camera2D, MouseButton, Vec2,
+};
 use macroquad::rand::gen_range;
 use std::collections::{BTreeMap, HashMap};
 
@@ -50,7 +52,6 @@ impl GameWorld {
         let mut new_cells = HashMap::<Pos2d, Cell>::new();
 
         for (pos, _) in self.cells.clone() {
-
             let mut num_alive = 0;
             if self.is_alive(pos.x - 1, pos.y - 1) {
                 num_alive += 1;
@@ -236,12 +237,9 @@ impl GameWorld {
                 false => {
                     self.draw_mode = DrawMode::AddCell;
                 }
-                true => {
-                    self.draw_mode = DrawMode::RemoveCell
-                }
+                true => self.draw_mode = DrawMode::RemoveCell,
             }
         }
-
 
         if is_mouse_button_down(MouseButton::Left) {
             let (mouse_x, mouse_y) = mouse_position();
